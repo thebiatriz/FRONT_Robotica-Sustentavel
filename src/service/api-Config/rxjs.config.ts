@@ -1,6 +1,6 @@
-import type { ResponseType } from 'axios';
-import { Observable, defer, map } from 'rxjs';
-import api from './setup';
+import type { ResponseType } from "axios";
+import { Observable, defer, map } from "rxjs";
+import api from "./setup";
 
 const get = <T>(
     url: string,
