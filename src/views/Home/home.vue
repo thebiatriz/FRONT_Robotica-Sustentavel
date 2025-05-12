@@ -1,5 +1,6 @@
 <template>
-    <div>Home</div>
+    <ViewHeader titleHeader="Bem-vindo(a) ao" :showButtonRegister="false"
+        titleForRobotics="Instituto Robótica Sustentável!" />
 </template>
 
 <script lang="ts">
