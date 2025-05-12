@@ -1,6 +1,6 @@
 <template>
   <div class="min-h-screen">
-    <navbar />
+    <Navbar />
     <div class='pt-[20vh] px-[6vh] md:px-[7vh]'>
       <RouterView />
     </div>
