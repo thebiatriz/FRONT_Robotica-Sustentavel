@@ -2,8 +2,12 @@ import Button from "primevue/button";
 import Card from "primevue/card";
 import Column from "primevue/column";
 import DataTable from "primevue/datatable";
+import DataView from "primevue/dataview";
 import Dialog from "primevue/dialog";
 import Drawer from "primevue/drawer";
+import IconField from "primevue/iconfield";
+import InputIcon from "primevue/inputicon";
+import InputNumber from "primevue/inputnumber";
 import InputText from "primevue/inputtext";
 import Menu from "primevue/menu";
 import Menubar from "primevue/menubar";
@@ -21,8 +25,12 @@ export function setPrimeVueComponents(app: App) {
     app.component("Card", Card);
     app.component("Column", Column);
     app.component("DataTable", DataTable);
+    app.component("DataView", DataView);
     app.component("Dialog", Dialog);
-    app.component("Drawer", Drawer)
+    app.component("Drawer", Drawer);
+    app.component("IconField", IconField);
+    app.component("InputIcon", InputIcon);
+    app.component("InputNumber", InputNumber);
     app.component("InputText", InputText);
     app.component("Menu", Menu);
     app.component("Menubar", Menubar);
