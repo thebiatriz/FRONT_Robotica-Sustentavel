@@ -27,7 +27,7 @@ function initAxios(config: AxiosRequestConfig): AxiosInstance {
     return defineInstance;
 }
 
-function api(baseURL = "/api") {
+function api(baseURL = import.meta.env.VITE_APP_BASE_URL) {
     return initAxios(apiConfig(baseURL));
 }
 
