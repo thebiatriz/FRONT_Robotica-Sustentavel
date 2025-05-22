@@ -46,7 +46,7 @@ export default defineComponent({
                         },
                         {
                             label: "Registrar",
-                            command: () => this.navigateTo('/sale/register')
+                            command: () => this.navigateTo('/computer-output', 'sale')
                         }
                     ]
                 },
@@ -59,7 +59,7 @@ export default defineComponent({
                         },
                         {
                             label: "Registrar",
-                            command: () => this.navigateTo('/donation/register')
+                            command: () => this.navigateTo('/computer-output', 'donation')
                         }
                     ]
                 }
@@ -68,9 +68,16 @@ export default defineComponent({
     },
 
     methods: {
-        navigateTo(route: string): void {
-            this.$router.push(route);
-        },
+        navigateTo(route: string, type?: string): void {
+            if (type) {
+                this.$router.push({
+                    path: route,
+                    query: { 'type': type.toLowerCase() } 
+                });
+            } else {
+                this.$router.push(route);
+            }
+        }
     }
 })
 </script>
