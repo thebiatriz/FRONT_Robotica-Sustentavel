@@ -5,11 +5,11 @@
                 {{ titleHeader }}&nbsp;<span class="text-[#05A51D]"> {{ titleForRobotics }} </span>
             </span>
         </h1>
-        <section class="flex justify-end items-center space-x-4">
-            <Button v-if="showButtonRegister" @click="$emit('register')"
+        <div class="flex justify-end items-center space-x-4">
+            <Button v-if="showButtonRegister" @click="$emit('to-register')"
                 class="!rounded-full !bg-[#05A51D] hover:!bg-[#058D1A] items-center h-10" type="button"
                 icon="pi pi-plus" />
-        </section>
+        </div>
     </header>
 </template>
 

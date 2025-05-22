@@ -46,7 +46,7 @@ export default defineComponent({
                         },
                         {
                             label: "Registrar",
-                            command: () => this.navigateTo('/sale/register')
+                            command: () => this.navigateTo('/computer-output')
                         }
                     ]
                 },
@@ -59,7 +59,7 @@ export default defineComponent({
                         },
                         {
                             label: "Registrar",
-                            command: () => this.navigateTo('/donation/register')
+                            command: () => this.navigateTo('/computer-output')
                         }
                     ]
                 }

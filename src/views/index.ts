@@ -10,4 +10,16 @@ export class Views {
     static ComputerForm(): Promise<any> {
         return import ("./Computer/computer-form.vue");
     }
+
+    static Donation(): Promise<any> {
+        return import ("./Donation/donation.vue");
+    }
+
+    static Sale(): Promise<any> {
+        return import ("./Sale/sale.vue");
+    }
+
+    static ComputerOutput(): Promise<any> {
+        return import ("./ComputerOutput/computer-output.vue");
+    }
 }
