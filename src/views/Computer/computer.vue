@@ -19,7 +19,7 @@
                 <template #empty>
                     <div class="text-xl">
                         <div v-if="isLoading" class="h-fit grid grid-cols-3 gap-7">
-                            <Skeleton v-for="skelItem in 12" :key="'skeleton-' + skelItem" height="2.6rem" class="my-1" />
+                            <Skeleton v-for="skelItem in 12" :key="skelItem" height="2.6rem" class="my-1" />
                         </div>
                         <template v-else>
                             <span v-if="isComputerSearched" class="block mt-4 text-lg text-[#666666]">
@@ -94,7 +94,7 @@
                     <div class="text-xl">
                         <div v-if="isLoading" v-for="i in 4" :key="i"
                             class="h-fit flex flex-col gap-3 rounded-lg bg-[#FCFDFF] border border-[#DDDDDD] text-[#666666] p-3 mb-6">
-                            <Skeleton v-for="skelItem in 3" :key="'skeleton-' + skelItem" height="1.0rem" />
+                            <Skeleton v-for="skelItem in 3" :key="skelItem" height="1.0rem" />
                         </div>
                         <template v-else>
                             <span v-if="isComputerSearched" class="block mt-4 text-lg text-[#666666]">
@@ -112,7 +112,7 @@
                     <section v-for="computer in computerList.items" :key="computer.id"
                         class="flex flex-col bg-[#FCFDFF] border border-[#DDDDDD] text-[#666666] rounded-lg p-3 mb-6">
                         <div v-if="isLoading" class="h-fit grid grid-cols-1 gap-3">
-                            <Skeleton v-for="skelItem in 3" :key="'skeleton-' + skelItem" height="1.0rem" />
+                            <Skeleton v-for="skelItem in 3" :key="skelItem" height="1.0rem" />
                         </div>
                         <template v-else>
                             <span><strong class="text-[#333]">Marca:</strong> {{ formattedBrand(computer.brand)

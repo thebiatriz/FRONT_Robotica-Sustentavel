@@ -9,7 +9,8 @@
                 <section aria-labelledby="computer-selection-heading">
                     <h2 id="computer-selection-heading" class="sr-only">Seleção do Computador</h2>
                     <div class="grid grid-cols-1">
-                        <div> <label for="computerSearchInput" class="font-bold">Computador</label>
+                        <div>
+                            <label for="computerSearchInput" class="font-bold">Computador</label>
                             <IconField class="w-full mt-[1vh]">
                                 <InputText v-debounce:200ms="getComputerBySearch" v-model="searchedComputer"
                                     id="computerSearchInput" class="w-full" placeholder="Pesquisar computador" />
@@ -17,16 +18,15 @@
                             </IconField>
                         </div>
 
-                        <div class="mt-[4vh] p-4 md:p-5 bg-white border border-[#DDDDDD] rounded-lg" aria-live="polite"
-                            aria-atomic="true">
+                        <div class="mt-[4vh] p-4 md:p-5 bg-white border border-[#DDDDDD] rounded-lg 
+                                    lg:h-[323px]" aria-live="polite" aria-atomic="true">
                             <h3 class="sr-only">Resultados da Pesquisa de Computadores</h3>
                             <DataView :value="allComputers" data-key="id">
                                 <template #empty>
                                     <div class="text-xl">
                                         <div v-if="isLoading" v-for="loaderItem in 2" :key="'loader-' + loaderItem"
                                             class="h-fit flex flex-col gap-3 rounded-lg bg-[#FCFDFF] border border-[#DDDDDD] text-[#666666] p-3 mb-6">
-                                            <Skeleton v-for="skelItem in 3" :key="'skeleton-' + skelItem"
-                                                height="1.0rem" />
+                                            <Skeleton v-for="skelItem in 2" :key="skelItem" height="1.0rem" />
                                         </div>
                                         <template v-else>
                                             <p v-if="isComputerSearched" class="block mt-4 text-lg text-[#666666]">
@@ -45,10 +45,8 @@
                                         <article v-for="computer in computerList.items" :key="computer.id"
                                             aria-labelledby="'computer_item_heading_' + computer.id"
                                             class="flex flex-col md:flex-row justify-between items-center bg-[#FCFDFF] border border-[#DDDDDD] text-[#666666] rounded-lg p-3 mb-6">
-
                                             <div v-if="isLoading" class="h-fit grid grid-cols-1 gap-3 w-full">
-                                                <Skeleton v-for="skelItem in 3" :key="'skeleton-' + skelItem"
-                                                    height="1.0rem" />
+                                                <Skeleton v-for="skelItem in 2" :key="skelItem" height="1.0rem" />
                                             </div>
                                             <template v-else>
                                                 <div class="grid grid-cols-1">
@@ -113,7 +111,7 @@
                             </div>
                         </fieldset>
 
-                        <div class="w-full mt-[6vh] md:mt-[8vh] lg:mt-[10vh]">
+                        <div class="w-full mt-[6vh] md:mt-[8vh]">
                             <div class="flex flex-col md:flex md:flex-row md:items-start gap-[6vw]">
                                 <div class="grid grid-cols-1 items-center gap-y-2 md:flex-1 min-w-0">
                                     <label for="quantityInStockInput" class="font-bold">Estoque</label>
@@ -137,29 +135,26 @@
                         </div>
 
                         <div v-if="radioOutputOption === 'Sale'"
-                            class="grid grid-cols-1 mt-[6vh] md:mt-[8vh] lg:mt-[10vh] items-center gap-y-2">
+                            class="grid grid-cols-1 mt-[6vh] md:mt-[8vh] items-center gap-y-2">
                             <label for="currency-brazil" class="font-bold"><span class="text-[#FF0000]">* </span>Preço
                                 por
                                 unidade</label>
-                            <InputNumber v-model="computerUnitPrice" :invalid="computerUnitPrice === null"
+                            <InputNumber required v-model="computerUnitPrice" :invalid="computerUnitPrice === null"
                                 input-id="currency-brazil" mode="currency" currency="BRL" locale="pt-BR"
                                 placeholder="R$ 0,00" :pt="{ root: { class: 'w-full' } }" />
                         </div>
-
-
                     </div>
                 </section>
 
             </div>
             <div
-                class="mt-[9vh] md:mt-[8vh] lg:mt-[1vh] flex flex-col-reverse items-center md:flex-row justify-center md:justify-end gap-[2vw]">
+                class="mt-[9vh] md:mt-[8vh] lg:mt-[0vh] flex flex-col-reverse items-center md:flex-row justify-center md:justify-end gap-[3vw] md:gap-[2vw]">
                 <Button @click="$router.go(-1)" type="button"
                     class="w-full sm:w-1/2 md:w-1/4 lg:w-[15%] hover:!bg-[#FDFAF0] !border-[#F2D16D] !text-[#666666]"
                     label="Cancelar" outlined />
-                <Button type="submit" label="Registrar"
+                <Button type="submit" label="Registrar" 
                     class="active:scale-95 w-full sm:w-1/2 md:w-1/4 lg:w-[15%] !border-[#2C2C2C] !bg-[#05A51D] hover:!bg-[#058D1A]" />
             </div>
-
         </form>
     </main>
 </template>
@@ -300,8 +295,14 @@ export default defineComponent({
             this.updateQuantityOptions(Number(computer.quantity));
         },
         testSubmit() {
-            alert("Quantidade selecionada: " + this.quantitySelected?.value);
-        }
+            if(this.quantitySelected !== null) {
+                return alert("Quantidade selecionada: " + this.quantitySelected?.value);
+            } else if(!this.computerSelected.id) {
+                return alert("Selecione um computador e a quantidade.")
+            } else {
+                return alert("Selectione a quantidade de computadores.")
+            }
+        },
     },
     computed: {
         computerService(): ComputerService {
