@@ -31,7 +31,7 @@
                                         <template v-else>
                                             <p v-if="isComputerSearched" class="block mt-4 text-lg text-[#666666]">
                                                 Nenhum resultado encontrado para <strong>"{{ searchedComputer.trim()
-                                                    }}"</strong>
+                                                }}"</strong>
                                             </p>
                                             <p v-else class="block mt-4 text-lg text-[#666666]">
                                                 Nenhum computador cadastrado
@@ -102,12 +102,12 @@
                             <div class="flex flex-row gap-[8vw] mt-[1vh]">
                                 <div class="flex items-center gap-2">
                                     <RadioButton v-model="radioOutputOption" inputId="donation_id" name="outputType"
-                                        value="Donation" />
+                                        value="donation" />
                                     <label for="donation_id">Doação</label>
                                 </div>
                                 <div class="flex items-center gap-2">
                                     <RadioButton v-model="radioOutputOption" inputId="sale_id" name="outputType"
-                                        value="Sale" />
+                                        value="sale" />
                                     <label for="sale_id">Venda</label>
                                 </div>
                             </div>
@@ -128,7 +128,7 @@
                                 </div>
                                 <div class="grid grid-cols-1 mt-[3vh] md:mt-0 items-center gap-y-2 md:flex-1 min-w-0">
                                     <label for="datePickerInput" class="font-bold">
-                                        {{ radioOutputOption === 'Sale' ? 'Data da venda' : 'Data da doação' }}
+                                        {{ radioOutputOption === 'sale' ? 'Data da venda' : 'Data da doação' }}
                                     </label>
                                     <DatePicker disabled v-model="currentDateToRegister" date-format="dd/mm/yy"
                                         inputId="datePickerInput" class="w-full" />
@@ -136,7 +136,7 @@
                             </div>
                         </div>
 
-                        <div v-if="radioOutputOption === 'Sale'"
+                        <div v-if="radioOutputOption === 'sale'"
                             class="grid grid-cols-1 mt-[6vh] md:mt-[8vh] items-center gap-y-2">
                             <label for="currency-brazil" class="font-bold"><span class="text-[#FF0000]">* </span>Preço
                                 por
@@ -191,17 +191,26 @@ export default defineComponent({
             newSale: new ItemSale(),
             isComputerSearched: false as boolean,
             searchedComputer: "" as string,
-            radioOutputOption: "Donation" as string,
+            radioOutputOption: "donation" as string,
             quantitySelected: null as { value: number } | null,
             quantityInStock: [] as Array<{ value: number }>,
             currentDateToRegister: new Date(),
             isQuantityDisabled: true as boolean,
             computerUnitPrice: null as number | null,
+            computerService: null as ComputerService | null,
+            itemSaleService: null as ItemSaleService | null,
+            itemDonationService: null as ItemDonationService | null,
         };
     },
-
+    created() {
+        this.computerService = new ComputerService();
+        this.itemSaleService = new ItemSaleService();
+        this.itemDonationService = new ItemDonationService();
+    },
     methods: {
         getAllComputers(query: QueryParams): void {
+            if (!this.computerService) return;
+
             this.isLoading = true;
             this.totalRegistersBeforeReload = this.totalRegisters;
 
@@ -210,7 +219,7 @@ export default defineComponent({
                     this.allComputers = response.data;
                     this.totalRegisters = response.totalRegisters;
 
-                    const hasRedirected = this.handleVoidPage(this.allComputers, query.PageNumber, this.totalRegistersBeforeReload, query.PageSize);
+                    const hasRedirected = this.handleVoidPage(this.allComputers, query.PageNumber);
 
                     if (!hasRedirected) {
                         this.isLoading = false;
@@ -225,6 +234,8 @@ export default defineComponent({
             this.computerService.getAllComputers(query);
         },
         getComputerBySearch(): void {
+            if (!this.computerService) return;
+
             this.query.Search = this.searchedComputer.trim();
             const query: QueryParams = {
                 PageNumber: 1,
@@ -256,6 +267,8 @@ export default defineComponent({
             this.getAllComputers(this.query);
         },
         createSale(): void {
+            if (!this.itemSaleService) return;
+
             if (!this.computerUnitPrice) {
                 console.error("Erro ao receber valor de venda do computador.");
                 return;
@@ -265,7 +278,7 @@ export default defineComponent({
             this.newSale.priceSale = this.computerUnitPrice;
             this.newSale.quantity = this.quantitySelected?.value;
 
-            this.ItemSaleService.sale.pipe(take(1)).subscribe({
+            this.itemSaleService.sale.pipe(take(1)).subscribe({
                 next: (response) => {
                     if (response) {
                         this.clearOutputFields();
@@ -275,13 +288,15 @@ export default defineComponent({
                     }
                 },
             });
-            this.ItemSaleService.createItemSale(this.newSale);
+            this.itemSaleService.createItemSale(this.newSale);
         },
         createDonation(): void {
+            if (!this.itemDonationService) return;
+
             this.newDonation.computerId = this.computerSelected.id;
             this.newDonation.quantity = this.quantitySelected?.value;
 
-            this.ItemDonationService.donation.pipe(take(1)).subscribe({
+            this.itemDonationService.donation.pipe(take(1)).subscribe({
                 next: (response) => {
                     if (response) {
                         this.clearOutputFields();
@@ -291,12 +306,12 @@ export default defineComponent({
                     }
                 },
             });
-            this.ItemDonationService.createItemDonation(this.newDonation);
+            this.itemDonationService.createItemDonation(this.newDonation);
 
         },
         handleComputerOutput(): void {
             if (this.quantitySelected !== null) {
-                if (this.radioOutputOption === "Sale") return this.createSale();
+                if (this.radioOutputOption === "sale") return this.createSale();
                 else return this.createDonation();
             } else if (!this.computerSelected.id) {
                 return alert("Selecione um computador e a quantidade.");
@@ -314,6 +329,7 @@ export default defineComponent({
             this.computerSelected = new Computer;
             this.computerUnitPrice = null;
             this.quantitySelected = null;
+            this.isQuantityDisabled = true;
         },
         navigateTo(route: string): void {
             this.$router.push(route);
@@ -321,26 +337,15 @@ export default defineComponent({
         onPaginate(event: PageState): void {
             this.query.PageNumber = event.page + 1;
             this.$router.replace({ name: "ComputerOutput", query: { page: this.query.PageNumber } });
-            this.getAllComputers(this.query);
         },
         getCurrentPage(): void {
             this.query.PageNumber = this.pageFromRoute;
         },
-        handleVoidPage(allComputers: Computer[], currentPage: number, totalRegisters: number, pageSize: number): boolean {
+        handleVoidPage(allComputers: Computer[], currentPage: number): boolean {
             if (allComputers === undefined || allComputers.length === 0) {
-                if (totalRegisters > 0) {
-                    const totalPages = Math.floor(totalRegisters / pageSize);
-                    if (currentPage > totalPages) {
-                        this.query.PageNumber = totalPages;
-                        this.$router.replace({ name: "ComputerOutput", query: { page: totalPages } });
-                        this.getAllComputers(this.query);
-                        return true;
-                    }
-                }
                 if (currentPage > 1) {
                     this.query.PageNumber = 1;
                     this.$router.replace({ name: "ComputerOutput", query: { page: 1 } });
-                    this.getAllComputers(this.query);
                     return true;
                 }
             }
@@ -355,27 +360,46 @@ export default defineComponent({
 
             this.updateQuantityOptions(Number(computer.quantity));
         },
+        handleRadioButtonValue(): void {
+            if (this.currentTransactionType === 'donation' || this.currentTransactionType === 'sale') {
+                this.radioOutputOption = this.currentTransactionType;
+            }
+        }
+    },
+    watch: {
+        radioOutputOption(newValue): void {
+            if (newValue === 'donation' || newValue === 'sale') {
+                if (this.$route.query.type !== newValue)
+                    this.$router.replace({ name: "ComputerOutput", query: { 'type': newValue } });
+            }
+        },
+        currentTransactionType(newValue, oldValue): void {
+            if (newValue !== oldValue) {
+                this.handleRadioButtonValue();
+            }
+        },
+        pageFromRoute(newPage: number, oldPage: number) {
+            if (newPage !== oldPage) {
+                this.query.PageNumber = newPage;
+                this.getAllComputers(this.query);
+            }
+        }
     },
     computed: {
-        computerService(): ComputerService {
-            return new ComputerService();
-        },
-        ItemSaleService(): ItemSaleService {
-            return new ItemSaleService();
-        },
-        ItemDonationService(): ItemDonationService {
-            return new ItemDonationService();
-        },
         firstElementPage(): number {
             return (this.query.PageNumber - 1) * this.query.PageSize;
         },
         pageFromRoute(): number {
             return Number(this.$route.query.page) || 1;
         },
+        currentTransactionType(): string | undefined {
+            return this.$route.query.type as string | undefined;
+        }
     },
     mounted() {
         this.getCurrentPage();
         this.getAllComputers(this.query);
+        this.handleRadioButtonValue();
     },
 })
 </script>

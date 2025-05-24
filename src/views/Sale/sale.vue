@@ -1,6 +1,6 @@
 <template>
     <main class="w-full">
-        <ViewHeader titleHeader="Vendas Registradas" :showButtonRegister="true"  @to-register="navigateTo('/computer-output')"/>
+        <ViewHeader titleHeader="Vendas Registradas" :showButtonRegister="true"  @to-register="navigateTo('/computer-output', 'sale')"/>
     </main>
 </template>
 
@@ -84,8 +84,15 @@ export default defineComponent({
         //         this.computerService.deleteComputer(this.selectedComputer.id);
         //     }
         // },
-        navigateTo(route: string): void {
-            this.$router.push(route);
+        navigateTo(route: string, type?: string): void {
+            if (type) {
+                this.$router.push({
+                    path: route,
+                    query: { 'type': type.toLowerCase() } 
+                });
+            } else {
+                this.$router.push(route);
+            }
         },
     },
  

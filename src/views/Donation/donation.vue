@@ -1,6 +1,7 @@
 <template>
     <main class="w-full">
-        <ViewHeader titleHeader="Doações Registradas" :showButtonRegister="true"  @to-register="navigateTo('/computer-output')"/>
+        <ViewHeader titleHeader="Doações Registradas" :showButtonRegister="true"
+            @to-register="navigateTo('/computer-output', 'donation')" />
 
         <section class="hidden md:block mt-[4vh] p-4 md:p-5 bg-white border border-[#DDDDDD] rounded-lg">
             <DataTable :value="allComputers" class="border border-gray-500 rounded-lg px-2 py-2 h-fit">
@@ -25,7 +26,7 @@
                     <template #body="{ data }">
                         <Skeleton v-if="isLoading" height="2.6rem" />
                         <span v-else class="items-center justify-center text-center"> {{ formattedBrand(data.brand)
-                        }}</span>
+                            }}</span>
                     </template>
                 </Column>
 
@@ -95,7 +96,7 @@
                         </div>
                         <template v-else>
                             <span><strong class="text-[#333]">Marca:</strong> {{ formattedBrand(computer.brand)
-                            }}</span>
+                                }}</span>
                             <span><strong class="text-[#333]">Processador:</strong> {{ computer.cpu }}</span>
                             <span><strong class="text-[#333]">Estoque:</strong> {{ computer.quantity }}</span>
                             <Button @click="showToggleOptions($event, computer)" type="button" severity="secondary" text
@@ -220,8 +221,15 @@ export default defineComponent({
         //         this.computerService.deleteComputer(this.selectedComputer.id);
         //     }
         // },
-        navigateTo(route: string): void {
-            this.$router.push(route);
+        navigateTo(route: string, type?: string): void {
+            if (type) {
+                this.$router.push({
+                    path: route,
+                    query: { 'type': type.toLowerCase() } 
+                });
+            } else {
+                this.$router.push(route);
+            }
         },
         showToggleOptions(event: Event, computer: Computer): void {
             this.selectedComputer = computer;
