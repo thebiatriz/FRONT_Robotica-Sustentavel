@@ -102,7 +102,6 @@ export default defineComponent({
         },
         goBackToAllComputers() {
             this.$router.push('/computer');
-
         },
         populateFields() {
             this.computerInput.brand = String(this.computerData?.brand);

@@ -2,7 +2,7 @@
     <main class="w-full">
         <ViewHeader titleHeader="Saída de Computadores" :showButtonRegister="false" />
 
-        <form @submit.prevent="testSubmit"
+        <form @submit.prevent="handleComputerOutput"
             class="bg-white border border-[#DDDDDD] rounded-lg p-4 md:p-10 text-[#666666]">
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-[18vw] md:gap-[8vh] lg:gap-[13vw]">
 
@@ -82,10 +82,12 @@
 
                         <div class="pt-6">
                             <p class="font-bold"><span class="text-[#FF0000]">* </span>Selecionado:
-                                <span class="text-[#05A51D]" aria-live="polite">
+                                <span class="transition-colors duration-200"
+                                    :class="computerSelected.brand ? 'text-[#05A51D]' : 'text-[#F97316]'"
+                                    aria-live="polite">
                                     {{ computerSelected.brand && computerSelected.cpu ? `${computerSelected.brand} -
                                     ${computerSelected.cpu}` :
-                                        computerSelected.brand ?? 'Nenhum' }}
+                                        computerSelected.brand ?? 'Nenhum computador selecionado' }}
                                 </span>
                             </p>
                         </div>
@@ -139,9 +141,9 @@
                             <label for="currency-brazil" class="font-bold"><span class="text-[#FF0000]">* </span>Preço
                                 por
                                 unidade</label>
-                            <InputNumber required v-model="computerUnitPrice" :invalid="computerUnitPrice === null"
-                                input-id="currency-brazil" mode="currency" currency="BRL" locale="pt-BR"
-                                placeholder="R$ 0,00" :pt="{ root: { class: 'w-full' } }" />
+                            <InputNumber required v-model="computerUnitPrice" input-id="currency-brazil" mode="currency"
+                                currency="BRL" locale="pt-BR" placeholder="R$ 0,00"
+                                :pt="{ root: { class: 'w-full' } }" />
                         </div>
                     </div>
                 </section>
@@ -152,7 +154,7 @@
                 <Button @click="$router.go(-1)" type="button"
                     class="w-full sm:w-1/2 md:w-1/4 lg:w-[15%] hover:!bg-[#FDFAF0] !border-[#F2D16D] !text-[#666666]"
                     label="Cancelar" outlined />
-                <Button type="submit" label="Registrar" 
+                <Button type="submit" label="Registrar"
                     class="active:scale-95 w-full sm:w-1/2 md:w-1/4 lg:w-[15%] !border-[#2C2C2C] !bg-[#05A51D] hover:!bg-[#058D1A]" />
             </div>
         </form>
@@ -164,9 +166,13 @@ import { defineComponent } from 'vue';
 import { Computer } from '../../models/computer.model';
 import { QueryParams } from '../../models/query-params.model';
 import { ComputerService } from '../Computer/computer.service';
+import { ItemSaleService } from '../Sale/item-sale.service';
+import { ItemDonationService } from '../Donation/item-donation.service';
 import type { PageState } from 'primevue';
 import { take } from 'rxjs';
 import vueDebounce from 'vue-debounce';
+import { ItemDonation } from '../../models/item-donation.model';
+import { ItemSale } from '../../models/item-sale.model';
 
 export default defineComponent({
     name: "computer-output",
@@ -181,7 +187,8 @@ export default defineComponent({
             totalRegisters: 0 as number,
             isLoading: true as boolean,
             totalRegistersBeforeReload: 0 as number,
-
+            newDonation: new ItemDonation(),
+            newSale: new ItemSale(),
             isComputerSearched: false as boolean,
             searchedComputer: "" as string,
             radioOutputOption: "Donation" as string,
@@ -189,7 +196,7 @@ export default defineComponent({
             quantityInStock: [] as Array<{ value: number }>,
             currentDateToRegister: new Date(),
             isQuantityDisabled: true as boolean,
-            computerUnitPrice: null,
+            computerUnitPrice: null as number | null,
         };
     },
 
@@ -248,10 +255,64 @@ export default defineComponent({
             this.isComputerSearched = false;
             this.getAllComputers(this.query);
         },
+        createSale(): void {
+            if (!this.computerUnitPrice) {
+                console.error("Erro ao receber valor de venda do computador.");
+                return;
+            }
+
+            this.newSale.computerId = this.computerSelected.id;
+            this.newSale.priceSale = this.computerUnitPrice;
+            this.newSale.quantity = this.quantitySelected?.value;
+
+            this.ItemSaleService.sale.pipe(take(1)).subscribe({
+                next: (response) => {
+                    if (response) {
+                        this.clearOutputFields();
+                        this.$router.push("/sale");
+                    } else {
+                        console.error('Falha ao criar venda.');
+                    }
+                },
+            });
+            this.ItemSaleService.createItemSale(this.newSale);
+        },
+        createDonation(): void {
+            this.newDonation.computerId = this.computerSelected.id;
+            this.newDonation.quantity = this.quantitySelected?.value;
+
+            this.ItemDonationService.donation.pipe(take(1)).subscribe({
+                next: (response) => {
+                    if (response) {
+                        this.clearOutputFields();
+                        this.$router.push("/donation");
+                    } else {
+                        console.error('Falha ao criar doação.');
+                    }
+                },
+            });
+            this.ItemDonationService.createItemDonation(this.newDonation);
+
+        },
+        handleComputerOutput(): void {
+            if (this.quantitySelected !== null) {
+                if (this.radioOutputOption === "Sale") return this.createSale();
+                else return this.createDonation();
+            } else if (!this.computerSelected.id) {
+                return alert("Selecione um computador e a quantidade.");
+            } else {
+                return alert("Selectione a quantidade de computadores.");
+            }
+        },
         updateQuantityOptions(stockQuantity: number): void {
             this.quantityInStock = Array.from({ length: stockQuantity }, (_, i) => ({
                 value: i + 1
             }));
+            this.quantitySelected = null;
+        },
+        clearOutputFields(): void {
+            this.computerSelected = new Computer;
+            this.computerUnitPrice = null;
             this.quantitySelected = null;
         },
         navigateTo(route: string): void {
@@ -294,19 +355,16 @@ export default defineComponent({
 
             this.updateQuantityOptions(Number(computer.quantity));
         },
-        testSubmit() {
-            if(this.quantitySelected !== null) {
-                return alert("Quantidade selecionada: " + this.quantitySelected?.value);
-            } else if(!this.computerSelected.id) {
-                return alert("Selecione um computador e a quantidade.")
-            } else {
-                return alert("Selectione a quantidade de computadores.")
-            }
-        },
     },
     computed: {
         computerService(): ComputerService {
             return new ComputerService();
+        },
+        ItemSaleService(): ItemSaleService {
+            return new ItemSaleService();
+        },
+        ItemDonationService(): ItemDonationService {
+            return new ItemDonationService();
         },
         firstElementPage(): number {
             return (this.query.PageNumber - 1) * this.query.PageSize;
