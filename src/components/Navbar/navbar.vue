@@ -24,6 +24,11 @@ export default defineComponent({
         return {
             items: [
                 {
+                    label: "Home",
+                    command: () => this.navigateTo('/')
+
+                },
+                {
                     label: "Computadores",
                     items: [
                         {
@@ -72,7 +77,7 @@ export default defineComponent({
             if (type) {
                 this.$router.push({
                     path: route,
-                    query: { 'type': type.toLowerCase() } 
+                    query: { 'type': type.toLowerCase() }
                 });
             } else {
                 this.$router.push(route);
