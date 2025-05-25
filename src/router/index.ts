@@ -6,6 +6,9 @@ const routes: Array<RouteRecordRaw> = [
   { path: "/computer/register", name: "ComputerRegister", component: Views.ComputerForm },
   { path: "/computer/edit/:id", name: "ComputerEdit", component: Views.ComputerForm },
   { path: "/computer", name: "Computer", component: Views.Computer },
+  { path: "/computer-output", name: "ComputerOutput", component: Views.ComputerOutput },
+  { path: "/donation", name: "Donation", component: Views.Donation },
+  { path: "/sale", name: "Sale", component: Views.Sale },
 ];
 
 const router = createRouter({
