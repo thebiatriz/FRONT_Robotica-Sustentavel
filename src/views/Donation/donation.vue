@@ -18,7 +18,7 @@
                     </div>
                 </template>
 
-                <Column field="computer.brand" style="width: 25%">
+                <Column field="brand" style="width: 25%">
                     <template #header>
                         <span class="text-[#515151] text-xl font-semibold">Computador</span>
                     </template>
@@ -26,9 +26,9 @@
                     <template #body="{ data }">
                         <Skeleton v-if="isLoading" height="2.2rem" />
                         <span v-else class="inline-flex items-center gap-2">
-                            <span class="font-medium text-[#666666] ">{{ formattedBrand(data.computer.brand) }}</span>
+                            <span class="font-medium text-[#666666] ">{{ formattedBrand(data.brand) }}</span>
                             <span class="text-gray-300"> | </span>
-                            <span class="text-[#666666]">{{ data.computer.cpu }}</span>
+                            <span class="text-[#666666]">{{ data.cpu }}</span>
                         </span>
                     </template>
                 </Column>
@@ -94,7 +94,7 @@
                             </div>
                             <template v-else>
                                 <span class="text-[#666666]"><strong>Computador:</strong> {{
-                                    `${formattedBrand(itemDonation.computer.brand)} | ${itemDonation.computer.cpu}`
+                                    `${formattedBrand(itemDonation.brand)} | ${itemDonation.cpu}`
                                 }}</span>
                                 <span class="text-[#666666]"><strong class="text-[#666666]">Quantidade:</strong> {{
                                     itemDonation.quantity }}</span>
