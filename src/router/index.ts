@@ -9,6 +9,11 @@ const routes: Array<RouteRecordRaw> = [
   { path: "/computer-output", name: "ComputerOutput", component: Views.ComputerOutput },
   { path: "/donation", name: "Donation", component: Views.Donation },
   { path: "/sale", name: "Sale", component: Views.Sale },
+  {
+    path: "/:pathMatch(.*)*", name: "NotFound", component: Views.NotFound, meta: {
+      hideNavigation: true
+    }
+  },
 ];
 
 const router = createRouter({
