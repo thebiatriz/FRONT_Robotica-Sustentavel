@@ -1,25 +1,29 @@
 export class Views {
     static Home(): Promise<any> {
-        return import ("./Home/home.vue");
+        return import("./Home/home.vue");
     }
 
     static Computer(): Promise<any> {
-        return import ("./Computer/computer.vue");
+        return import("./Computer/computer.vue");
     }
 
     static ComputerForm(): Promise<any> {
-        return import ("./Computer/computer-form.vue");
+        return import("./Computer/computer-form.vue");
     }
 
     static Donation(): Promise<any> {
-        return import ("./Donation/donation.vue");
+        return import("./Donation/donation.vue");
     }
 
     static Sale(): Promise<any> {
-        return import ("./Sale/sale.vue");
+        return import("./Sale/sale.vue");
     }
 
     static ComputerOutput(): Promise<any> {
-        return import ("./ComputerOutput/computer-output.vue");
+        return import("./ComputerOutput/computer-output.vue");
+    }
+
+    static NotFound(): Promise<any> {
+        return import("./NotFound/not-found.vue");
     }
 }
