@@ -83,11 +83,11 @@
                         <div class="pt-6">
                             <p class="font-bold"><span class="text-[#FF0000]">* </span>Selecionado:
                                 <span class="transition-colors duration-200"
-                                    :class="computerSelected.brand ? 'text-[#05A51D]' : 'text-[#F97316]'"
+                                    :class="(computerSelected.brand || computerSelected.cpu) ? 'text-[#05A51D]' : 'text-[#F97316]'"
                                     aria-live="polite">
                                     {{ computerSelected.brand && computerSelected.cpu ? `${computerSelected.brand} -
                                     ${computerSelected.cpu}` :
-                                        computerSelected.brand ?? 'Nenhum computador selecionado' }}
+                                        (computerSelected.brand || computerSelected.cpu) ?? 'Nenhum computador selecionado' }}
                                 </span>
                             </p>
                         </div>
