@@ -17,6 +17,7 @@ import ProgressSpinner from "primevue/progressspinner";
 import RadioButton from "primevue/radiobutton";
 import Select from "primevue/select";
 import Skeleton from "primevue/skeleton";
+import Tag from "primevue/tag";
 import Toast from "primevue/toast";
 import Toolbar from "primevue/toolbar";
 
@@ -42,6 +43,7 @@ export function setPrimeVueComponents(app: App) {
     app.component("RadioButton", RadioButton);
     app.component("Select", Select);
     app.component("Skeleton", Skeleton);
+    app.component("Tag", Tag);
     app.component("Toast", Toast);
     app.component("Toolbar", Toolbar);
 }

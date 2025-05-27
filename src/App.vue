@@ -1,7 +1,7 @@
 <template>
   <template v-if="shouldShowNavigation">
     <Navbar />
-    <main class="min-h-screen pt-[20vh] pb-[5vh] md:pb-0 px-[4vh] md:px-[7vh]">
+    <main class="min-h-screen pt-[20vh] pb-[5vh] px-[4vh] md:px-[7vh]">
       <RouterView />
     </main>
   </template>
