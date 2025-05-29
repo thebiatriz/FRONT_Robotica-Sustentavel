@@ -36,35 +36,37 @@
 
                 <Column field="brand" style="width: 33%">
                     <template #header>
-                        <span class="text-xl font-semibold">Marca</span>
+                        <span class="text-xl text-[#515151] font-semibold">Marca</span>
                     </template>
 
                     <template #body="{ data }">
                         <Skeleton v-if="isLoading" height="2.6rem" />
-                        <span v-else class="items-center justify-center text-center"> {{ formattedBrand(data.brand)
+                        <span v-else class="items-center justify-center text-center text-[#666666]"> {{
+                            formattedBrand(data.brand)
                             }}</span>
                     </template>
                 </Column>
 
                 <Column field="cpu" style="width: 33%">
                     <template #header>
-                        <span class="text-xl font-semibold">Processador</span>
+                        <span class="text-xl text-[#515151] font-semibold">Processador</span>
                     </template>
 
                     <template #body="{ data }">
                         <Skeleton v-if="isLoading" height="2.6rem" />
-                        <span v-else class="items-center justify-center text-center"> {{ data.cpu }}</span>
+                        <span v-else class="items-center justify-center text-center text-[#666666]"> {{ data.cpu
+                            }}</span>
                     </template>
                 </Column>
 
-                <Column field="quantity" style="width: 33%">
+                <Column field="quantity" sortable style="width: 33%">
                     <template #header>
-                        <span class="text-xl font-semibold">Estoque</span>
+                        <span class="text-xl text-[#515151] font-semibold">Estoque</span>
                     </template>
                     <template #body="{ data }">
                         <Skeleton v-if="isLoading" height="2.6rem" />
                         <section v-else class="flex justify-between items-center">
-                            <span class="items-center justify-center text-center">
+                            <span class="items-center justify-center text-center text-[#666666]">
                                 {{ data.quantity }}
                             </span>
                             <div class="card flex justify-center">
@@ -98,8 +100,11 @@
                         </div>
                         <template v-else>
                             <span v-if="isComputerSearched" class="block mt-4 text-lg text-[#666666]">
-                                <p class="mt-2">Nenhum resultado encontrado para <strong>"{{ searchedComputer.trim()
+                                <p class="mt-2">Nenhum resultado encontrado para <strong>"{{
+                                    searchedComputer.trim()
                                         }}"</strong></p>
+                                <p class="text-sm pb-2">Tente pesquisar por outra coisa ou verifique a
+                                    ortografia.</p>
                             </span>
                             <span v-else class="block mt-4 text-lg text-[#666666]">
                                 Nenhum computador cadastrado
@@ -115,10 +120,10 @@
                             <Skeleton v-for="skelItem in 3" :key="skelItem" height="1.0rem" />
                         </div>
                         <template v-else>
-                            <span><strong class="text-[#333]">Marca:</strong> {{ formattedBrand(computer.brand)
+                            <span class="text-[#666666]"><strong>Marca:</strong> {{ formattedBrand(computer.brand)
                                 }}</span>
-                            <span><strong class="text-[#333]">Processador:</strong> {{ computer.cpu }}</span>
-                            <span><strong class="text-[#333]">Estoque:</strong> {{ computer.quantity }}</span>
+                            <span class="text-[#666666]"><strong>Processador:</strong> {{ computer.cpu }}</span>
+                            <span class="text-[#666666]"><strong>Estoque:</strong> {{ computer.quantity }}</span>
                             <Button @click="showToggleOptions($event, computer)" type="button" severity="secondary" text
                                 aria-label="Botão de opções para editar e deletar" icon="pi pi-ellipsis-v"
                                 class="flex items-center self-end" aria-controls="overlay_menu" />
@@ -266,7 +271,6 @@ export default defineComponent({
         onPaginate(event: PageState): void {
             this.query.PageNumber = event.page + 1;
             this.$router.replace({ name: "Computer", query: { page: this.query.PageNumber } });
-            this.getAllComputers(this.query);
         },
         getCurrentPage(): void {
             this.query.PageNumber = this.pageFromRoute;
@@ -278,14 +282,12 @@ export default defineComponent({
                     if (currentPage > totalPages) {
                         this.query.PageNumber = totalPages;
                         this.$router.replace({ name: "Computer", query: { page: totalPages } });
-                        this.getAllComputers(this.query);
                         return true;
                     }
                 }
                 if (currentPage > 1) {
                     this.query.PageNumber = 1;
                     this.$router.replace({ name: "Computer", query: { page: 1 } });
-                    this.getAllComputers(this.query);
                     return true;
                 }
             }
@@ -293,6 +295,14 @@ export default defineComponent({
         },
         formattedBrand(brand: string | undefined | null): string {
             return !brand || brand.trim() === '' ? 'Sem marca' : brand;
+        }
+    },
+    watch: {
+        pageFromRoute(newPage: number, oldPage: number) {
+            if (newPage !== oldPage) {
+                this.query.PageNumber = newPage;
+                this.getAllComputers(this.query);
+            }
         }
     },
     computed: {
