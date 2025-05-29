@@ -7,14 +7,11 @@
             <h2 class="text-lg md:text-xl">Aqui está o resumo das suas atividades</h2>
 
             <div class="border border-[#DDDDDD] rounded-lg p-6 mt-[3vh] pb-[5vh] md:pb-[7vh]">
-
                 <div class="flex flex-col md:flex-row">
-
                     <p class="font-semibold flex flex-col md:flex-row md:items-center">
                         <span>Total acumulado de vendas:&nbsp;</span>
 
                         <span class="block md:items-center mt-1 md:mt-0 md:ml-1">
-
                             <template v-if="isTotalSalesLoading">
                                 <Skeleton width="200px" height="1.5rem" />
                             </template>
@@ -23,17 +20,15 @@
                             </template>
                         </span>
                     </p>
-
                 </div>
 
                 <section class="mt-[7vh]">
                     <h3>Últimas movimentações</h3>
-
                     <DataView :value="itemList">
                         <template #empty>
                             <div class="text-xl">
                                 <div v-if="isListLoading"
-                                    class="h-fit grid grid-cols-1 md:grid-cols-2 gap-x-[8vw] gap-10 mt-[2vh]">
+                                    class="h-fit grid grid-cols-1 md:grid-cols-2 gap-x-[8vw] gap-10 mt-[2vh] bg-[#FCFDFF]">
                                     <div v-for="i in 4" :key="i" class="border border-[#DDDDDD] p-3 rounded-lg">
                                         <Skeleton v-for="skelItem in 4" :key="skelItem" height="1.1rem" class="my-2" />
                                     </div>

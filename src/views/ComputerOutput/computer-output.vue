@@ -19,7 +19,7 @@
                         </div>
 
                         <div class="mt-[4vh] p-4 md:p-5 bg-white border border-[#DDDDDD] rounded-lg 
-                                    lg:h-[323px]" aria-live="polite" aria-atomic="true">
+                                    lg:h-[323px] lg:overflow-y-auto" aria-live="polite" aria-atomic="true">
                             <h3 class="sr-only">Resultados da Pesquisa de Computadores</h3>
                             <DataView :value="allComputers" data-key="id">
                                 <template #empty>
@@ -41,28 +41,39 @@
                                 </template>
 
                                 <template #list="computerList">
-                                    <div role="list">
+                                    <div role="list" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-1 gap-x-[6vw]">
                                         <article v-for="computer in computerList.items" :key="computer.id"
                                             aria-labelledby="'computer_item_heading_' + computer.id"
-                                            class="flex flex-col md:flex-row justify-between items-center bg-[#FCFDFF] border border-[#DDDDDD] text-[#666666] rounded-lg p-3 mb-6">
-                                            <div v-if="isLoading" class="h-fit grid grid-cols-1 gap-3 w-full">
-                                                <Skeleton v-for="skelItem in 2" :key="skelItem" height="1.0rem" />
-                                            </div>
+                                            class="flex flex-col md:flex-row justify-between items-start sm:items-center bg-[#FCFDFF] border border-[#DDDDDD] text-[#666666] rounded-lg p-3 mb-6 gap-x-4">
+
+                                            <template v-if="isLoading">
+                                                <div class="h-fit grid grid-cols-1 gap-3 w-full">
+                                                    <Skeleton v-for="skelItem in 2" :key="skelItem" height="1.0rem" />
+                                                </div>
+                                            </template>
                                             <template v-else>
-                                                <div class="grid grid-cols-1">
+                                                <div class="grid grid-cols-1 w-full md:flex-grow md:w-auto">
                                                     <h4 :id="'computer_item_heading_' + computer.id" class="sr-only">
                                                         Computador {{ formattedBrand(computer.brand) }} {{ computer.cpu
-                                                        }}</h4>
+                                                        }}
+                                                    </h4>
                                                     <span><strong class="text-[#333]">Marca:</strong> {{
                                                         formattedBrand(computer.brand) }}</span>
                                                     <span><strong class="text-[#333]">Processador:</strong> {{
                                                         computer.cpu }}</span>
                                                 </div>
-                                                <div class="mt-[2vh] md:mt-0 flex justify-end md:block">
-                                                    <Button @click="selectComputer(computer)" type="button"
-                                                        class="w-full hover:!bg-[#FDFAF0] !border-[#F2D16D] !text-[#666666]"
+
+                                                <div
+                                                    class="mt-3 w-full md:w-auto md:mt-0 flex-shrink-0 flex justify-center sm:justify-end">
+                                                    <Button v-if="computer.quantity"
+                                                        @click="handleSelectComputerAndScroll(computer)" type="button"
+                                                        class="w-full md:w-28 hover:!bg-[#FDFAF0] !border-[#F2D16D] !text-[#666666]"
                                                         :aria-label="'Selecionar computador ' + formattedBrand(computer.brand) + ' ' + computer.cpu"
                                                         label="Selecionar" outlined />
+                                                    <Button v-else type="button" disabled
+                                                        class="w-full md:w-28 !border-[#F2D16D] !text-[#666666]"
+                                                        :aria-label="'Computador indisponível para registro' + formattedBrand(computer.brand) + ' ' + computer.cpu"
+                                                        label="Indisponível" outlined />
                                                 </div>
                                             </template>
                                         </article>
@@ -87,14 +98,15 @@
                                     aria-live="polite">
                                     {{ computerSelected.brand && computerSelected.cpu ? `${computerSelected.brand} -
                                     ${computerSelected.cpu}` :
-                                        (computerSelected.brand || computerSelected.cpu) ?? 'Nenhum computador selecionado' }}
+                                        (computerSelected.brand || computerSelected.cpu) ?? 'Nenhum computador selecionado'
+                                    }}
                                 </span>
                             </p>
                         </div>
                     </div>
                 </section>
 
-                <section aria-labelledby="registration-details-heading">
+                <section aria-labelledby="registration-details-heading" id="registerOutput">
                     <h2 id="registration-details-heading" class="sr-only">Detalhes do Registro de Saída</h2>
                     <div class="grid grid-cols-1">
                         <fieldset>
@@ -150,7 +162,7 @@
 
             </div>
             <div
-                class="mt-[9vh] md:mt-[8vh] lg:mt-[0vh] flex flex-col-reverse items-center md:flex-row justify-center md:justify-end gap-[3vw] md:gap-[2vw]">
+                class="mt-[9vh] md:mt-[8vh] lg:mt-[0vh] flex flex-col-reverse items-center md:flex-row justify-center sm:justify-end gap-[3vw] md:gap-[2vw]">
                 <Button @click="$router.go(-1)" type="button"
                     class="w-full sm:w-1/2 md:w-1/4 lg:w-[15%] hover:!bg-[#FDFAF0] !border-[#F2D16D] !text-[#666666]"
                     label="Cancelar" outlined />
@@ -223,7 +235,9 @@ export default defineComponent({
 
                     if (!hasRedirected) {
                         this.isLoading = false;
-                        this.isComputerSearched = false;
+                        if (!query.Search && !this.searchedComputer.trim()) {
+                            this.isComputerSearched = false;
+                        }
                     }
                 },
                 error: () => {
@@ -249,7 +263,7 @@ export default defineComponent({
             }
 
             this.computerService.allComputers.pipe(take(1)).subscribe({
-                next: (response: any) => {
+                next: (response) => {
                     this.allComputers = response.data;
                     this.totalRegisters = response.totalRegisters
                     this.isComputerSearched = true;
@@ -364,6 +378,16 @@ export default defineComponent({
             if (this.currentTransactionType === 'donation' || this.currentTransactionType === 'sale') {
                 this.radioOutputOption = this.currentTransactionType;
             }
+        },
+        handleSelectComputerAndScroll(computer: Computer): void {
+            this.selectComputer(computer);
+
+            this.$nextTick(() => {
+                const targetElement = document.getElementById('registerOutput');
+                if (targetElement) {
+                    targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
         }
     },
     watch: {
