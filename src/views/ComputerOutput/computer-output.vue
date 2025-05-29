@@ -29,10 +29,13 @@
                                             <Skeleton v-for="skelItem in 2" :key="skelItem" height="1.0rem" />
                                         </div>
                                         <template v-else>
-                                            <p v-if="isComputerSearched" class="block mt-4 text-lg text-[#666666]">
-                                                Nenhum resultado encontrado para <strong>"{{ searchedComputer.trim()
-                                                }}"</strong>
-                                            </p>
+                                            <div v-if="isComputerSearched" class="mt-4 text-lg text-[#666666]">
+                                                <p class="mt-2">Nenhum resultado encontrado para <strong>"{{
+                                                        searchedComputer.trim()
+                                                        }}"</strong></p>
+                                                <p class="text-sm pb-2">Tente pesquisar por outra coisa ou verifique a
+                                                    ortografia.</p>
+                                                </div>
                                             <p v-else class="block mt-4 text-lg text-[#666666]">
                                                 Nenhum computador cadastrado
                                             </p>

@@ -11,9 +11,9 @@
                             <Skeleton v-for="i in 16" :key="i" height="2.2rem" />
                         </div>
                         <template v-else>
-                            <span class="block mt-4 text-lg text-[#666666]">
+                            <p class="block mt-4 text-lg text-[#666666]">
                                 Nenhuma venda registrada
-                            </span>
+                            </p>
                         </template>
                     </div>
                 </template>
