@@ -37,8 +37,12 @@
                 <Button @click="$router.go(-1)" type="button"
                     class="w-1/2 md:w-1/4 lg:w-[15%] hover:!bg-[#FDFAF0] !border-[#F2D16D] !text-[#666666]"
                     label="Cancelar" outlined />
-                <Button type="submit" :label="currentComputerId ? 'Atualizar' : 'Registrar'"
-                    class="active:scale-95 w-1/2 md:w-1/4 lg:w-[15%] !border-[#2C2C2C] !bg-[#05A51D] hover:!bg-[#058D1A]" />
+                <Button type="submit" :loading="isSendingForm" :disabled="!isFormValidToRegister || isSendingForm"
+                    :class="{
+                        'active:scale-95 hover:!bg-[#058D1A]': !isSendingForm && isFormValidToRegister,
+                        '!cursor-not-allowed': !isFormValidToRegister, '!cursor-progress': isSendingForm
+                    }" :label="currentComputerId ? 'Atualizar' : 'Registrar'"
+                    class="w-1/2 md:w-1/4 lg:w-[15%] !border-[#2C2C2C] !bg-[#05A51D]" />
             </div>
         </form>
     </main>
@@ -61,7 +65,8 @@ export default defineComponent({
                 storage: "" as string,
                 quantity: 1 as number
             },
-            computerData: {} as Computer
+            computerData: {} as Computer,
+            isSendingForm: false as boolean
         }
     },
 
@@ -77,24 +82,29 @@ export default defineComponent({
         },
         createComputer(): void {
             if (this.computerInput.quantity <= 0) return alert("A quantidade em estoque deve ser maior que zero.");
-            this.goBackToAllComputers();
+            this.isSendingForm = true;
+
             this.computerService.computer.subscribe({
                 next: () => {
-
+                    this.isSendingForm = false;
+                    this.goBackToAllComputers();
+                },
+                error: () => {
+                    this.isSendingForm = false;
                 }
             });
             this.computerService.createComputer(this.computerInput);
         },
         updateComputer(): void {
             if (this.currentComputerId) {
-
-                this.goBackToAllComputers();
+                this.isSendingForm = true;
                 this.computerService.computer.subscribe({
                     next: () => {
-
+                        this.isSendingForm = false;
+                        this.goBackToAllComputers();
                     },
                     error: () => {
-
+                        this.isSendingForm = false;
                     }
                 });
                 this.computerService.updateComputer(this.currentComputerId, this.computerInput);
@@ -121,7 +131,8 @@ export default defineComponent({
             } else {
                 this.createComputer();
             }
-        },
+        }
+
     },
     computed: {
         computerService(): ComputerService {
@@ -129,6 +140,9 @@ export default defineComponent({
         },
         currentComputerId(): string | undefined {
             return this.$route.params.id as string | undefined;
+        },
+        isFormValidToRegister(): boolean {
+            return this.computerInput.cpu !== '' && this.computerInput.quantity > 0 && this.computerInput.ram !== '' && this.computerInput.storage !== '';
         }
     },
     mounted() {

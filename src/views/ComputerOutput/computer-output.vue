@@ -31,11 +31,11 @@
                                         <template v-else>
                                             <div v-if="isComputerSearched" class="mt-4 text-lg text-[#666666]">
                                                 <p class="mt-2">Nenhum resultado encontrado para <strong>"{{
-                                                        searchedComputer.trim()
+                                                    searchedComputer.trim()
                                                         }}"</strong></p>
                                                 <p class="text-sm pb-2">Tente pesquisar por outra coisa ou verifique a
                                                     ortografia.</p>
-                                                </div>
+                                            </div>
                                             <p v-else class="block mt-4 text-lg text-[#666666]">
                                                 Nenhum computador cadastrado
                                             </p>
@@ -169,8 +169,11 @@
                 <Button @click="$router.go(-1)" type="button"
                     class="w-full sm:w-1/2 md:w-1/4 lg:w-[15%] hover:!bg-[#FDFAF0] !border-[#F2D16D] !text-[#666666]"
                     label="Cancelar" outlined />
-                <Button type="submit" label="Registrar"
-                    class="active:scale-95 w-full sm:w-1/2 md:w-1/4 lg:w-[15%] !border-[#2C2C2C] !bg-[#05A51D] hover:!bg-[#058D1A]" />
+                <Button type="submit" label="Registrar" :loading="isSendingForm"
+                    :disabled="isSendingForm || !isFormValidToRegister" :class="{
+                        'active:scale-95 hover:!bg-[#058D1A]': !isSendingForm && isFormValidToRegister,
+                        '!cursor-progress': isSendingForm, '!cursor-not-allowed': !isFormValidToRegister
+                    }" class="w-full sm:w-1/2 md:w-1/4 lg:w-[15%] !border-[#2C2C2C] !bg-[#05A51D]" />
             </div>
         </form>
     </main>
@@ -215,6 +218,7 @@ export default defineComponent({
             computerService: null as ComputerService | null,
             itemSaleService: null as ItemSaleService | null,
             itemDonationService: null as ItemDonationService | null,
+            isSendingForm: false as boolean
         };
     },
     created() {
@@ -230,7 +234,7 @@ export default defineComponent({
             this.totalRegistersBeforeReload = this.totalRegisters;
 
             this.computerService.allComputers.subscribe({
-                next: (response: any) => {
+                next: (response) => {
                     this.allComputers = response.data;
                     this.totalRegisters = response.totalRegisters;
 
@@ -290,6 +294,7 @@ export default defineComponent({
                 console.error("Erro ao receber valor de venda do computador.");
                 return;
             }
+            this.isSendingForm = true;
 
             this.newSale.computerId = this.computerSelected.id;
             this.newSale.priceSale = this.computerUnitPrice;
@@ -298,9 +303,11 @@ export default defineComponent({
             this.itemSaleService.sale.pipe(take(1)).subscribe({
                 next: (response) => {
                     if (response) {
+                        this.isSendingForm = false;
                         this.clearOutputFields();
                         this.$router.push("/sale");
                     } else {
+                        this.isSendingForm = false;
                         console.error('Falha ao criar venda.');
                     }
                 },
@@ -310,15 +317,19 @@ export default defineComponent({
         createDonation(): void {
             if (!this.itemDonationService) return;
 
+            this.isSendingForm = true;
+
             this.newDonation.computerId = this.computerSelected.id;
             this.newDonation.quantity = this.quantitySelected?.value;
 
             this.itemDonationService.donation.pipe(take(1)).subscribe({
                 next: (response) => {
                     if (response) {
+                        this.isSendingForm = false;
                         this.clearOutputFields();
                         this.$router.push("/donation");
                     } else {
+                        this.isSendingForm = false;
                         console.error('Falha ao criar doação.');
                     }
                 },
@@ -410,7 +421,8 @@ export default defineComponent({
                 this.query.PageNumber = newPage;
                 this.getAllComputers(this.query);
             }
-        }
+        },
+
     },
     computed: {
         firstElementPage(): number {
@@ -421,6 +433,17 @@ export default defineComponent({
         },
         currentTransactionType(): string | undefined {
             return this.$route.query.type as string | undefined;
+        },
+        isFormValidToRegister(): boolean {
+            if (!this.computerSelected || !this.computerSelected.id) return false;
+
+            if (this.quantitySelected === null || this.quantitySelected.value <= 0) return false;
+
+            if (this.radioOutputOption === 'donation') return true;
+
+            if (this.radioOutputOption === 'sale') return this.computerUnitPrice !== null && this.computerUnitPrice > 0;
+
+            return false;
         }
     },
     mounted() {
