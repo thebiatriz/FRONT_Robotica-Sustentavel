@@ -210,7 +210,7 @@ export default defineComponent({
         },
         formatDate(date: Date | undefined): string {
             if (!date) return 'Data não encontrada';
-            return new Date(date).toLocaleDateString("pt-BR", { timeZone: "UTC" });
+            return new Date(date).toLocaleDateString("pt-BR", { timeZone: "-03:00" });
         },
         formattedBrand(brand: string | undefined | null): string {
             return !brand || brand.trim() === '' ? 'Sem marca' : brand;
