@@ -33,10 +33,14 @@
                                         <Skeleton v-for="skelItem in 4" :key="skelItem" height="1.1rem" class="my-2" />
                                     </div>
                                 </div>
-                                <template v-else-if="itemList === null">
-                                    <p class="block mt-4 text-base text-[#666666]">
-                                        Nenhum registro cadastrado
-                                    </p>
+                                <template v-else>
+                                    <div class="p-5 mt-4 text-[#666666] border border-[#DDDDDD] rounded-lg">
+                                        <p class="text-base font-medium">
+                                            Nenhum registro cadastrado
+                                        </p>
+                                        <p class="text-sm">Tente cadastrar uma venda ou uma doação de computadores.
+                                        </p>
+                                    </div>
                                 </template>
                             </div>
                         </template>
@@ -176,7 +180,6 @@ export default defineComponent({
         isLabelForSale(itemStatus: string): boolean {
             return itemStatus === 'vendido' ? true : false;
         }
-
     },
     mounted() {
         this.getSumSales();

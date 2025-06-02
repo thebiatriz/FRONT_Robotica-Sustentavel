@@ -71,7 +71,6 @@ export default defineComponent({
             isSendingForm: false as boolean
         }
     },
-
     methods: {
         getComputerById(id: string): void {
             this.computerService.computer.subscribe({
@@ -100,6 +99,7 @@ export default defineComponent({
         updateComputer(): void {
             if (this.currentComputerId) {
                 this.isSendingForm = true;
+
                 this.computerService.computer.subscribe({
                     next: () => {
                         this.$toast.add(ToastService.success(MessageToasts.SUCCESS_UPDATE_COMPUTER));
@@ -117,7 +117,7 @@ export default defineComponent({
             this.$router.push('/computer');
         },
         populateFields(): void {
-            this.computerInput.brand = String(this.computerData?.brand);
+            this.computerInput.brand = this.formattedBrand(this.computerData.brand);
             this.computerInput.cpu = String(this.computerData?.cpu);
             this.computerInput.ram = String(this.computerData?.ram);
             this.computerInput.storage = String(this.computerData?.storage);
@@ -134,8 +134,10 @@ export default defineComponent({
             } else {
                 this.createComputer();
             }
+        },
+        formattedBrand(brand: string | undefined | null): string {
+            return !brand || brand.trim() === '' ? '' : brand;
         }
-
     },
     computed: {
         computerService(): ComputerService {
