@@ -12,12 +12,12 @@ export function handleApiError(error: unknown, customMessage: string = MessageTo
 
     switch (status) {
         case 400:
-            app.config.globalProperties.$toast.add(ToastService.error(serverMessage || 'Dados inválidos.', 'Erro de Validação'));
+            app.config.globalProperties.$toast.add(ToastService.error(serverMessage || 'Dados inválidos.', 'Erro de validação'));
             handled = true;
             break;
 
         case 403:
-            app.config.globalProperties.$toast.add(ToastService.error(MessageToasts.ERROR_FORBIDDEN, 'Acesso Negado'));
+            app.config.globalProperties.$toast.add(ToastService.error(MessageToasts.ERROR_FORBIDDEN, 'Acesso negado'));
             handled = true;
             break;
 
@@ -27,7 +27,7 @@ export function handleApiError(error: unknown, customMessage: string = MessageTo
             break;
 
         case 500:
-            app.config.globalProperties.$toast.add(ToastService.error(MessageToasts.ERROR_SERVER, 'Erro no Servidor'));
+            app.config.globalProperties.$toast.add(ToastService.error(MessageToasts.ERROR_SERVER, 'Erro no servidor'));
             handled = true;
             break;
     }

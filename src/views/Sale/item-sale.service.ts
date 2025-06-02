@@ -51,7 +51,7 @@ export class ItemSaleService {
                     this.sale$.next(response);
                 },
                 error: (error) => {
-                    this.sale$.next(error);
+                    this.sale$.error(error);
                 }
             })
     }

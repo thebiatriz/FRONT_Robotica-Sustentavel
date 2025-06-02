@@ -291,29 +291,24 @@ export default defineComponent({
         },
         createSale(): void {
             if (!this.itemSaleService) return;
+            if (!this.computerUnitPrice) return;
 
-            if (!this.computerUnitPrice) {
-                this.$toast.add(ToastService.error(MessageToasts.ERROR_PRICE_SALE, "Valor não reconhecido"));
-                console.error("Erro ao receber valor de venda do computador.");
-                return;
-            }
             this.isSendingForm = true;
 
             this.newSale.computerId = this.computerSelected.id;
             this.newSale.priceSale = this.computerUnitPrice;
             this.newSale.quantity = this.quantitySelected?.value;
 
-            this.itemSaleService.sale.pipe(take(1)).subscribe({
-                next: (response) => {
-                    if (response) {
-                        this.$toast.add(ToastService.success(MessageToasts.SUCCESS_CREATE_SALE));
-                        this.isSendingForm = false;
-                        this.clearOutputFields();
-                        this.$router.push("/sale");
-                    } else {
-                        this.isSendingForm = false;
-                    }
+            this.itemSaleService.sale.subscribe({
+                next: () => {
+                    this.$toast.add(ToastService.success(MessageToasts.SUCCESS_CREATE_SALE));
+                    this.isSendingForm = false;
+                    this.clearOutputFields();
+                    this.$router.push("/sale");
                 },
+                error: () => {
+                    this.isSendingForm = false;
+                }
             });
             this.itemSaleService.createItemSale(this.newSale);
         },
@@ -325,17 +320,16 @@ export default defineComponent({
             this.newDonation.computerId = this.computerSelected.id;
             this.newDonation.quantity = this.quantitySelected?.value;
 
-            this.itemDonationService.donation.pipe(take(1)).subscribe({
-                next: (response) => {
-                    if (response) {
-                        this.$toast.add(ToastService.success(MessageToasts.SUCCESS_CREATE_DONATION));
-                        this.isSendingForm = false;
-                        this.clearOutputFields();
-                        this.$router.push("/donation");
-                    } else {
-                        this.isSendingForm = false;
-                    }
+            this.itemDonationService.donation.subscribe({
+                next: () => {
+                    this.$toast.add(ToastService.success(MessageToasts.SUCCESS_CREATE_DONATION));
+                    this.isSendingForm = false;
+                    this.clearOutputFields();
+                    this.$router.push("/donation");
                 },
+                error: () => {
+                    this.isSendingForm = false;
+                }
             });
             this.itemDonationService.createItemDonation(this.newDonation);
 
