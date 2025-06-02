@@ -52,6 +52,8 @@
 import { defineComponent } from 'vue';
 import { ComputerService } from './computer.service';
 import { Computer } from '../../models/computer.model';
+import { ToastService } from '../../utils/toast-service.util';
+import { MessageToasts } from '../../utils/toast-messages.util';
 
 export default defineComponent({
     name: "computer-form",
@@ -81,11 +83,11 @@ export default defineComponent({
             this.computerService.getComputerById(id)
         },
         createComputer(): void {
-            if (this.computerInput.quantity <= 0) return alert("A quantidade em estoque deve ser maior que zero.");
             this.isSendingForm = true;
 
             this.computerService.computer.subscribe({
                 next: () => {
+                    this.$toast.add(ToastService.success(MessageToasts.SUCCESS_CREATE_COMPUTER));
                     this.isSendingForm = false;
                     this.goBackToAllComputers();
                 },
@@ -100,6 +102,7 @@ export default defineComponent({
                 this.isSendingForm = true;
                 this.computerService.computer.subscribe({
                     next: () => {
+                        this.$toast.add(ToastService.success(MessageToasts.SUCCESS_UPDATE_COMPUTER));
                         this.isSendingForm = false;
                         this.goBackToAllComputers();
                     },
@@ -110,22 +113,22 @@ export default defineComponent({
                 this.computerService.updateComputer(this.currentComputerId, this.computerInput);
             }
         },
-        goBackToAllComputers() {
+        goBackToAllComputers(): void {
             this.$router.push('/computer');
         },
-        populateFields() {
+        populateFields(): void {
             this.computerInput.brand = String(this.computerData?.brand);
             this.computerInput.cpu = String(this.computerData?.cpu);
             this.computerInput.ram = String(this.computerData?.ram);
             this.computerInput.storage = String(this.computerData?.storage);
             this.computerInput.quantity = Number(this.computerData?.quantity);
         },
-        handleComputerId() {
+        handleComputerId(): void {
             if (this.currentComputerId) {
                 this.getComputerById(this.currentComputerId);
             }
         },
-        submitForm() {
+        submitForm(): void {
             if (this.currentComputerId) {
                 this.updateComputer();
             } else {

@@ -191,6 +191,8 @@ import { take } from 'rxjs';
 import vueDebounce from 'vue-debounce';
 import { ItemDonationDto } from '../../models/item-donation-dto.model';
 import { ItemSaleDto } from '../../models/item-sale-dto.model';
+import { ToastService } from '../../utils/toast-service.util';
+import { MessageToasts } from '../../utils/toast-messages.util';
 
 export default defineComponent({
     name: "computer-output",
@@ -272,7 +274,7 @@ export default defineComponent({
             this.computerService.allComputers.pipe(take(1)).subscribe({
                 next: (response) => {
                     this.allComputers = response.data;
-                    this.totalRegisters = response.totalRegisters
+                    this.totalRegisters = response.totalRegisters;
                     this.isComputerSearched = true;
                 },
                 error: () => {
@@ -291,6 +293,7 @@ export default defineComponent({
             if (!this.itemSaleService) return;
 
             if (!this.computerUnitPrice) {
+                this.$toast.add(ToastService.error(MessageToasts.ERROR_PRICE_SALE, "Valor não reconhecido"));
                 console.error("Erro ao receber valor de venda do computador.");
                 return;
             }
@@ -303,12 +306,12 @@ export default defineComponent({
             this.itemSaleService.sale.pipe(take(1)).subscribe({
                 next: (response) => {
                     if (response) {
+                        this.$toast.add(ToastService.success(MessageToasts.SUCCESS_CREATE_SALE));
                         this.isSendingForm = false;
                         this.clearOutputFields();
                         this.$router.push("/sale");
                     } else {
                         this.isSendingForm = false;
-                        console.error('Falha ao criar venda.');
                     }
                 },
             });
@@ -325,12 +328,12 @@ export default defineComponent({
             this.itemDonationService.donation.pipe(take(1)).subscribe({
                 next: (response) => {
                     if (response) {
+                        this.$toast.add(ToastService.success(MessageToasts.SUCCESS_CREATE_DONATION));
                         this.isSendingForm = false;
                         this.clearOutputFields();
                         this.$router.push("/donation");
                     } else {
                         this.isSendingForm = false;
-                        console.error('Falha ao criar doação.');
                     }
                 },
             });
@@ -338,14 +341,9 @@ export default defineComponent({
 
         },
         handleComputerOutput(): void {
-            if (this.quantitySelected !== null) {
-                if (this.radioOutputOption === "sale") return this.createSale();
-                else return this.createDonation();
-            } else if (!this.computerSelected.id) {
-                return alert("Selecione um computador e a quantidade.");
-            } else {
-                return alert("Selectione a quantidade de computadores.");
-            }
+            if (this.radioOutputOption === "sale") return this.createSale();
+            else if (this.radioOutputOption === "donation") return this.createDonation();
+            else return this.$toast.add(ToastService.error(MessageToasts.ERROR_GENERIC, "Erro na transação"));
         },
         updateQuantityOptions(stockQuantity: number): void {
             this.quantityInStock = Array.from({ length: stockQuantity }, (_, i) => ({

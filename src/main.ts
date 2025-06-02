@@ -7,6 +7,7 @@ import Aura from "@primeuix/themes/aura";
 import "primeicons/primeicons.css";
 import { setPrimeVueComponents } from "./modules/primevue.module";
 import { setComponents } from "./modules/components.module";
+import ToastService from "primevue/toastservice";
 
 const app = createApp(App);
 
@@ -24,6 +25,7 @@ app.use(PrimeVue, {
 setPrimeVueComponents(app);
 setComponents(app);
 app.use(router);
+app.use(ToastService);
 app.mount("#app");
 
 export default app;

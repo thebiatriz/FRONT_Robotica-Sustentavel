@@ -158,6 +158,8 @@ import { ComputerService } from './computer.service';
 import type { PageState } from 'primevue';
 import vueDebounce from 'vue-debounce';
 import { take } from 'rxjs';
+import { ToastService } from '../../utils/toast-service.util';
+import { MessageToasts } from '../../utils/toast-messages.util';
 
 export default defineComponent({
     name: "computer",
@@ -222,7 +224,7 @@ export default defineComponent({
             this.computerService.allComputers.pipe(take(1)).subscribe({
                 next: (response) => {
                     this.allComputers = response.data;
-                    this.totalRegisters = response.totalRegisters
+                    this.totalRegisters = response.totalRegisters;
                     this.isComputerSearched = true;
                 },
                 error: () => {
@@ -243,6 +245,7 @@ export default defineComponent({
                 this.isVisibleDeleteDialog = false;
                 this.computerService.computer.subscribe({
                     next: () => {
+                        this.$toast.add(ToastService.success(MessageToasts.SUCCESS_DELETE_COMPUTER));
                         this.getAllComputers(this.query);
                     },
                     error: () => {
@@ -260,12 +263,12 @@ export default defineComponent({
             const ref = this.$refs.menuPopUp as any;
             ref.toggle(event);
         },
-        handleEditComputer(currentComputer: Computer) {
+        handleEditComputer(currentComputer: Computer): void {
             if (currentComputer.id) {
                 this.$router.push({ path: `/computer/edit/${currentComputer.id}` });
             }
         },
-        handleDeleteDialog(isVisible: boolean) {
+        handleDeleteDialog(isVisible: boolean): void {
             isVisible ? this.isVisibleDeleteDialog = false : this.isVisibleDeleteDialog = true;
         },
         onPaginate(event: PageState): void {

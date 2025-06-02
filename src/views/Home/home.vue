@@ -127,6 +127,9 @@ export default defineComponent({
                 next: (response) => {
                     this.itemList = response;
                     this.isListLoading = false;
+                },
+                error: () => {
+                    this.isListLoading = false;
                 }
             });
 
@@ -141,7 +144,9 @@ export default defineComponent({
                 next: (response) => {
                     this.totalSales = response;
                     this.isTotalSalesLoading = false;
-
+                },
+                error: () => {
+                    this.isTotalSalesLoading = false;
                 }
             });
 
@@ -171,9 +176,6 @@ export default defineComponent({
         isLabelForSale(itemStatus: string): boolean {
             return itemStatus === 'vendido' ? true : false;
         }
-
-    },
-    computed: {
 
     },
     mounted() {

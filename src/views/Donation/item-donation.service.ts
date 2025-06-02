@@ -1,4 +1,4 @@
-import { catchError, Observable, of, Subject, take } from "rxjs";
+import { Observable, Subject, take } from "rxjs";
 import type { QueryParams } from "../../models/query-params.model";
 import { ItemDonationRest } from "../../service/rest/item-donation.rest";
 import type { ItemDonationDto } from "../../models/item-donation-dto.model";
@@ -45,10 +45,13 @@ export class ItemDonationService {
     createItemDonation(itemDonationBody: ItemDonationDto): void {
         this._itemDonation
             .createItemDonation(itemDonationBody)
-            .pipe(take(1), catchError(() => of(null)))
+            .pipe(take(1))
             .subscribe({
                 next: (response) => {
                     this.donation$.next(response);
+                },
+                error: (error) => {
+                    this.donation$.error(error)
                 }
             })
     }

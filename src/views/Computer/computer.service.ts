@@ -1,4 +1,4 @@
-import { catchError, Observable, of, Subject, take } from "rxjs";
+import { Observable, Subject, take } from "rxjs";
 import { ComputerRest } from "../../service/rest/computer.rest";
 import { Computer } from "../../models/computer.model";
 import type { QueryParams } from "../../models/query-params.model";
@@ -59,10 +59,13 @@ export class ComputerService {
     createComputer(computerBody: Computer): void {
         this._computer
             .createComputer(computerBody)
-            .pipe(take(1), catchError(() => of(null)))
+            .pipe(take(1))
             .subscribe({
                 next: (response) => {
                     this.computer$.next(response);
+                },
+                error: (error) => {
+                    this.computer$.error(error);
                 }
             })
     }
