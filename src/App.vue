@@ -2,7 +2,7 @@
   <Toast :position="isMobileScreen ? 'top-center' : 'top-right'" />
   <template v-if="shouldShowNavigation">
     <Navbar />
-    <main class="min-h-screen pt-[20vh] pb-[5vh] px-[4vh] md:px-[7vh]">
+    <main class="min-h-screen pt-36 sm:pt-[28vh] md:pt-[20vh] pb-[5vh] px-[4vh] md:px-[7vh]">
       <RouterView />
     </main>
   </template>
