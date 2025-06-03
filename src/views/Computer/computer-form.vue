@@ -5,44 +5,51 @@
         <ViewHeader v-else titleHeader="Editar computador" :showButtonRegister="false" />
 
         <form @submit.prevent="submitForm" class="bg-white border border-[#DDDDDD] rounded-lg p-8 md:p-16">
-            <section class="grid grid-cols-1 md:grid-cols-2 gap-9 md:gap-16">
+            <fieldset class="grid grid-cols-1 md:grid-cols-2 text-[#666666] gap-9 md:gap-16">
                 <div class="grid grid-cols-1">
-                    <label>Marca</label>
-                    <InputText v-model="computerInput.brand" placeholder="Ex: Dell" />
+                    <label class="font-bold" for="computerBrandInput">Marca</label>
+                    <InputText v-model="computerInput.brand" id="computerBrandInput" placeholder="Ex: Dell" />
                 </div>
 
                 <div class="grid grid-cols-1">
-                    <label><span class="text-[#FF0000]">* </span>Processador</label>
-                    <InputText v-model="computerInput.cpu" required placeholder="Ex: Intel Core i5-12400F" />
+                    <label class="font-bold" for="computerCpuInput"><span class="text-[#FF0000]">*
+                        </span>Processador</label>
+                    <InputText v-model="computerInput.cpu" id="computerCpuInput" required
+                        placeholder="Ex: Intel Core i5-12400F" />
                 </div>
 
                 <div class="grid grid-cols-1">
-                    <label><span class="text-[#FF0000]">* </span>Armazenamento</label>
-                    <InputText v-model="computerInput.storage" required placeholder="Ex: 512GB" />
+                    <label class="font-bold" for="computerStorageInput"><span class="text-[#FF0000]">*
+                        </span>Armazenamento</label>
+                    <InputText v-model="computerInput.storage" id="computerStorageInput" required
+                        placeholder="Ex: 512GB" />
                 </div>
 
                 <div class="grid grid-cols-1">
-                    <label><span class="text-[#FF0000]">* </span>Memória RAM</label>
-                    <InputText v-model="computerInput.ram" required placeholder="Ex: 16GB" />
+                    <label class="font-bold" for="computerRamInput"><span class="text-[#FF0000]">* </span>Memória
+                        RAM</label>
+                    <InputText v-model="computerInput.ram" id="computerRamInput" required placeholder="Ex: 16GB" />
                 </div>
 
                 <div class="grid grid-cols-1">
-                    <label><span class="text-[#FF0000]">* </span>Estoque</label>
-                    <InputNumber v-model="computerInput.quantity" required placeholder="Ex: 10"
-                        inputClass="w-full md:w-auto" />
+                    <label class="font-bold" for="computerQuantityInput"><span class="text-[#FF0000]">*
+                        </span>Estoque</label>
+                    <InputNumber v-model="computerInput.quantity" input-id="computerQuantityInput" required
+                        placeholder="Ex: 10" inputClass="w-full md:w-auto" />
                 </div>
-            </section>
+            </fieldset>
 
-            <div class="pt-[5vh] flex justify-end gap-[2vw]">
+            <div
+                class="pt-[5vh] flex flex-col-reverse items-center md:flex-row justify-center sm:justify-end gap-[2vw]">
                 <Button @click="$router.go(-1)" type="button"
-                    class="w-1/2 md:w-1/4 lg:w-[15%] hover:!bg-[#FDFAF0] !border-[#F2D16D] !text-[#666666]"
+                    class="w-full sm:w-1/2 md:w-1/4 lg:w-[15%] hover:!bg-[#FDFAF0] !border-[#F2D16D] !text-[#666666]"
                     label="Cancelar" outlined />
                 <Button type="submit" :loading="isSendingForm" :disabled="!isFormValidToRegister || isSendingForm"
                     :class="{
                         'active:scale-95 hover:!bg-[#058D1A]': !isSendingForm && isFormValidToRegister,
                         '!cursor-not-allowed': !isFormValidToRegister, '!cursor-progress': isSendingForm
                     }" :label="currentComputerId ? 'Atualizar' : 'Registrar'"
-                    class="w-1/2 md:w-1/4 lg:w-[15%] !border-[#2C2C2C] !bg-[#05A51D]" />
+                    class="w-full sm:w-1/2 md:w-1/4 lg:w-[15%] !border-[#2C2C2C] !bg-[#05A51D]" />
             </div>
         </form>
     </main>
