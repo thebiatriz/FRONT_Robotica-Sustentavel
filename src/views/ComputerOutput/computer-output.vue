@@ -1,6 +1,7 @@
 <template>
     <main class="w-full">
-        <ViewHeader titleHeader="Saída de Computadores" :showButtonRegister="false" />
+        <ViewHeader titleHeader="Saída de Computadores" :showButtonRegister="false" :showButtonBack="true"
+            @navigate-back="$router.go(-1)" />
 
         <form @submit.prevent="handleComputerOutput"
             class="bg-white border border-[#DDDDDD] rounded-lg p-4 md:p-10 text-[#666666]">

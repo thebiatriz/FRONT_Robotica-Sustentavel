@@ -1,8 +1,9 @@
 <template>
     <main class="w-full">
-        <ViewHeader v-if="currentComputerId === undefined" titleHeader="Registrar computador"
-            :showButtonRegister="false" />
-        <ViewHeader v-else titleHeader="Editar computador" :showButtonRegister="false" />
+        <ViewHeader v-if="currentComputerId === undefined" titleHeader="Registrar computador" :showButtonBack="true"
+            @navigate-back="$router.go(-1)" />
+        <ViewHeader v-else titleHeader="Editar computador" :showButtonBack="true"
+            @navigate-back="$router.go(-1)" />
 
         <form @submit.prevent="submitForm" class="bg-white border border-[#DDDDDD] rounded-lg p-8 md:p-16">
             <fieldset class="grid grid-cols-1 md:grid-cols-2 text-[#666666] gap-9 md:gap-16">
