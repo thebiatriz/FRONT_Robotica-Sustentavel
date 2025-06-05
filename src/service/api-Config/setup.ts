@@ -1,5 +1,6 @@
 import axios, { AxiosError } from "axios";
-import type { AxiosInstance, AxiosRequestConfig } from "axios"
+import type { AxiosInstance, AxiosRequestConfig } from "axios";
+import { handleApiError } from "../../utils/error-handler.util";
 
 function apiConfig(baseUrl: string): AxiosRequestConfig {
     return {
@@ -18,16 +19,13 @@ function initAxios(config: AxiosRequestConfig): AxiosInstance {
 
     defineInstance.interceptors.response.use(
         (response) => response,
-        (error: AxiosError) => {
-            alert(error);
-            return Promise.reject(error);
-        }
+        (error: AxiosError) => handleApiError(error)
     );
 
     return defineInstance;
 }
 
-function api(baseURL = "/api") {
+function api(baseURL = import.meta.env.VITE_APP_BASE_URL) {
     return initAxios(apiConfig(baseURL));
 }
 
