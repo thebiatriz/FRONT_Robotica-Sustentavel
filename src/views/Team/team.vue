@@ -47,7 +47,7 @@ export default defineComponent({
                 {
                     name: 'Jader Ribeiro',
                     role: 'Gestor da equipe',
-                    linkedin: 'https://linkedin.com/in/jader-ribeiro-3890b6327/',
+                    linkedin: 'https://linkedin.com/in/jader-ribeiro-3890b6327',
                     github: 'https://github.com/jaderdossantos'
                 },
                 {
@@ -59,7 +59,7 @@ export default defineComponent({
                 {
                     name: 'Antonio José',
                     role: 'Dev back-end',
-                    linkedin: 'https://linkedin.com/in/antonio-jos%C3%A9-dos-santos-filho-13ab37271/',
+                    linkedin: 'https://linkedin.com/in/antonio-jose-dos-santos-filho',
                     github: 'https://github.com/Antonio-Filho0309'
                 },
                 {
